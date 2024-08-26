@@ -42,79 +42,34 @@ long long binpow(long long a, long long b) { if (b == 0) return 1;long long res 
 int binpowMod(int a, int b , int mod ){ if(b == 0) return 1 ; int ans = 1 ;while(b > 0){if(b & 1) ans = (ans * a) % mod ;a = (a * a) % mod ;b = b >> 1;}return ans % mod;}
 //---------------------------------------------------------------------------------------------
 
-
-void solve(){
-    string key, text;
-    getline(cin >> ws, key);
-    getline(cin >> ws, text);
-
-    string rule = "";
-    set<char> ace;
-    for(int i = 0; i < sz(key); i += 1){
-        if(key[i] == ' ') continue;
-        if(ace.find(key[i]) == ace.end()){
-            ace.insert(key[i]);
-            rule += key[i];
+vector<int> primes = sieve(1e6 + 10);
+void solve(int n){
+    bool isPrime = true;
+    for(auto it : primes){
+        if(it == n) break;
+        if(n % it == 0){
+            isPrime = false;
+            break;
         }
     }
 
-    for(char c = 'a'; c <= 'z'; c++){
-        if(c == 'q') continue;
-        if(ace.find(c) == ace.end()){
-            rule += c;
-        }
-    }
-    vector<int> row(26), col(26);
-    dbg(rule);
-    vector<vector<char>>v(5, vector<char>(5));
-    int temp = 0, idx = 0;
-    while(temp < 5){
-        for(int j = 0; j < 5; j += 1) v[temp][j] = rule[idx++];
-        temp += 1;
-    }
-
-    for(int i = 0; i < 5; i += 1){
-        for(int j = 0; j < 5; j += 1){
-            char c = v[i][j];
-            row[c - 'a'] = i;
-            col[c - 'a'] = j;
-        }
-    }
-
-    string str = "";
-    for(int i = 0; i < sz(text); i += 1){
-        if(text[i] == ' ') continue;
-        str += text[i];
-    }
-    string ans = "";
-    string tempStr = "";
-    for(int i = 0; i < sz(str); i += 1){
-
-        tempStr += str[i];
-        if(i == sz(str) - 1 and sz(tempStr) == 1) tempStr += "x";
-
-        if(sz(tempStr) == 2){
-            if(tempStr.front() == tempStr.back()){
-                tempStr.pop_back();
-                tempStr += "x";
-                i -= 1;
+    int val = 2ll * n + 1ll;
+    while(true){
+        bool flg = true;
+        for(auto it : primes){
+            if(it == val) break;
+            if(val % it == 0){
+                flg = false;
+                break;
             }
-            if(row[tempStr[0] - 'a'] == row[tempStr[1] - 'a']){
-                ans += v[row[tempStr[0] - 'a']][(col[tempStr[0] - 'a'] + 1) % 5];
-                ans += v[row[tempStr[1] - 'a']][(col[tempStr[1] - 'a'] + 1) % 5];
-            }else if(col[tempStr[0] - 'a'] == col[tempStr[1] - 'a']){
-                ans += v[(row[tempStr[0] - 'a'] + 1) % 5][col[tempStr[0] - 'a']];
-                ans += v[(row[tempStr[1] - 'a'] + 1) % 5][col[tempStr[1] - 'a']];
-            }else{
-                ans += v[row[tempStr[0] - 'a']][col[tempStr[1] - 'a']];
-                ans += v[row[tempStr[1] - 'a']][col[tempStr[0] - 'a']];
-            }
-            tempStr.clear();
         }
+        if(flg) break;
+        val++;
     }
 
-    for(int i = 0; i < sz(ans); i += 1){
-        cout << (char)toupper(ans[i]);
+    cout << val;
+    if(!isPrime){
+        cout << " (" << n << " is not prime)";
     }
     cout << '\n';
 }
@@ -128,8 +83,11 @@ int32_t main(){
               //cout << "Case #" << testCase << ": ";
               //cout << "Case " << testCase << ": " ;   
               //cout << "Scenario #" << testCase << ": " ;
-              solve();
-              testCase++; 
+              int x;
+              cin >> x;
+              if(x == 0) break;
+              solve(x);
+              //testCase++; 
        } 
 
        return 0; 
